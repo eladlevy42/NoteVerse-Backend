@@ -28,10 +28,9 @@ async function getTasks(req, res) {
   }
 
   try {
-    const tasks = await Task.find(criteriaObj)
-      .skip((page - 1) * 9)
-      .limit(9);
-    res.json(tasks);
+    const pinnedTasks = await Task.find({ ...criteriaObj, isPinned: true });
+    const notPinnedTasks = await Task.find({ ...criteriaObj, isPinned: false });
+    res.json({ notPinnedTasks, pinnedTasks });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: err.message });
@@ -63,6 +62,7 @@ async function getTaskById(req, res) {
 
 async function deleteTask(req, res) {
   const { id } = req.params;
+  console.log(id);
   try {
     const deletedTask = await Task.findByIdAndDelete(id);
     if (!deletedTask) {
@@ -102,8 +102,8 @@ async function createTask(req, res) {
 }
 
 async function updateTask(req, res) {
-  const { id } = req.params;
   const {
+    id,
     title,
     description,
     body,

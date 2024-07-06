@@ -19,7 +19,7 @@ async function register(req, res) {
       email,
       password: hashedPassword,
     });
-
+    console.log(user);
     await user.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
@@ -35,7 +35,7 @@ async function register(req, res) {
 async function login(req, res) {
   try {
     const { username, password } = req.body;
-
+    console.log(req.body);
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ error: "No Registered username" });

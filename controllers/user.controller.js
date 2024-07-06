@@ -14,21 +14,4 @@ async function getUser(req, res) {
   }
 }
 
-async function getUserTasks(req, res) {
-  const user = req.userId;
-  let page = parseInt(req.query.page) || 1;
-  if (page < 1) {
-    page = 1;
-  }
-  try {
-    const tasks = await Task.find({ user })
-      .skip((page - 1) * 9)
-      .limit(9);
-    res.status(200).json(tasks);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ err: err.message });
-  }
-}
-
 module.exports = { getUser };

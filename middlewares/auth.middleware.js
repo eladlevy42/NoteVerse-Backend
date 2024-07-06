@@ -27,8 +27,6 @@ async function verifyUser(req, res, next) {
   if (!task) {
     return res.status(404).json({ error: "taskId not found" });
   } else if (task.user.toString() !== req.userId) {
-    console.log(task.user._id);
-    console.log(req.userId, task.user);
     return res.status(403).json({ error: "user not authorized" });
   }
   next();
