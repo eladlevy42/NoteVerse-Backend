@@ -1,5 +1,5 @@
 const User = require("../models/user.model");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const { JWT_SECRET } = process.env;
@@ -10,7 +10,7 @@ async function register(req, res) {
   try {
     const { firstName, lastName, username, password, email } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const hashedPassword = await bcryptjs.hash(password, SALT_ROUNDS);
 
     const user = new User({
       firstName,
@@ -40,7 +40,7 @@ async function login(req, res) {
     if (!user) {
       return res.status(401).json({ error: "No Registered username" });
     }
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = await bcryptjs.compare(password, user.password);
     if (!isPasswordMatch) {
       return res.status(401).json({ error: "Wrong Password" });
     }

@@ -5,7 +5,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const Task = require("./models/task.model");
 const User = require("./models/user.model");
@@ -225,7 +225,7 @@ async function seedDB() {
     // const createdUsers = await User.insertMany(users);
     const createdUsers = await Promise.all(
       users.map(async (u) => {
-        const hashedPassword = await bcrypt.hash(u.password, SALT_ROUNDS); // Hash password
+        const hashedPassword = await bcryptjs.hash(u.password, SALT_ROUNDS); // Hash password
         const user = new User({ ...u, password: hashedPassword }); // Create new user object
         await user.save(); // Save user to database
         return user; // Return the saved user object
