@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(express.json()); // Parse JSON bodies
 app.use(cors({ origin: "http://localhost:5173" })); // Allow CORS for local development
-
 async function main() {
   await connectDB(); // Connect to the database
 
@@ -25,5 +24,6 @@ async function main() {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
+  app.use(express.static("public"));
 }
 main();

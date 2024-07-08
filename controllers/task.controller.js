@@ -37,7 +37,6 @@ async function getTasks(req, res) {
   }
 }
 async function getTaskById(req, res) {
-  console.log(req.params);
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -62,7 +61,7 @@ async function getTaskById(req, res) {
 
 async function deleteTask(req, res) {
   const { id } = req.params;
-  console.log(id);
+
   try {
     const deletedTask = await Task.findByIdAndDelete(id);
     if (!deletedTask) {
@@ -77,7 +76,6 @@ async function deleteTask(req, res) {
     res.status(500).json({ message: err.message });
   }
 }
-async function createTodo(todoArr) {}
 
 async function createTask(req, res) {
   const taskToAdd = req.body;
