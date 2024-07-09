@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const Task = require("../models/task.model");
 const { default: mongoose } = require("mongoose");
-
+const { jwtDecode } = require("jwt-decode");
+const User = require("../models/user.model");
 const { JWT_SECRET } = process.env;
 
 function verifyToken(req, res, next) {
@@ -32,4 +33,44 @@ async function verifyUser(req, res, next) {
   next();
 }
 
-module.exports = { verifyToken, verifyUser };
+async function verifyGoogle(req, res, next) {
+  const { credential } = req.body;
+
+  let credentialDecoded;
+
+  try {
+    credentialDecoded = jwtDecode(credential);
+    req.credentialDecoded = credentialDecoded; // Attach the decoded credentials to the request
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+
+  try {
+    const { email } = credentialDecoded;
+    let user = await User.findOne({ email });
+
+    if (user) {
+      req.user = user; // Attach the existing user to the request
+      return next(); // Proceed to the sign-in logic
+    }
+
+    // User does not exist, generate a unique username
+    let username = email.split("@")[0];
+
+    while (true) {
+      const checkUser = await User.findOne({ username });
+      if (!checkUser) {
+        break;
+      } else {
+        username = username + Math.floor(Math.random() * 10);
+      }
+    }
+
+    req.username = username; // Attach the unique username to the request
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+
+  next();
+}
+module.exports = { verifyToken, verifyUser, verifyGoogle };
