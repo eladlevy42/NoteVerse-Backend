@@ -3,8 +3,8 @@ const bcryptjs = require("bcryptjs");
 const User = require("../models/user.model");
 const { login } = require("./auth.controller");
 
-const SALT_ROUNDS = 10; // Adjust the salt rounds as needed
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret"; // Replace with your JWT secret
+const SALT_ROUNDS = 10;
+const { JWT_SECRET } = process.env;
 
 async function signWithGoogle(req, res) {
   const { credentialDecoded, username } = req;
@@ -19,13 +19,13 @@ async function signWithGoogle(req, res) {
 
   try {
     let user = req.user;
-
+    //if user exists, go straignt to the login.
     if (!user) {
-      // User does not exist, register them
+      // if user does not exist, register them with random password - won't needed because login will be with google. password is only for the scheme.
       const hashedPassword = await bcryptjs.hash(
         Math.random().toString(36).slice(-8),
         SALT_ROUNDS
-      ); // Random password for security
+      );
 
       user = new User({
         firstName,

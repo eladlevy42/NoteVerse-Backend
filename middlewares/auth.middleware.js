@@ -50,13 +50,13 @@ async function verifyGoogle(req, res, next) {
     let user = await User.findOne({ email });
 
     if (user) {
-      req.user = user; // Attach the existing user to the request
-      return next(); // Proceed to the sign-in logic
+      req.user = user; // if user already exist with that email, login
+      return next();
     }
 
-    // User does not exist, generate a unique username
     let username = email.split("@")[0];
-
+    // generate username by email, if username exists, genrate a random number after until its unique.
+    // user doesnt need to know the username because login will be with google. username is only for the scheme.
     while (true) {
       const checkUser = await User.findOne({ username });
       if (!checkUser) {
